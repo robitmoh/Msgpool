@@ -10,14 +10,3 @@ Router::plugin(
          $routes->fallbacks(DashedRoute::class);
     }
 );
-
-
-/*
-
-
-Router::prefix('admin', function ($routes) {
-    $routes->plugin('msgpool', ['path' => '/msgpool'], function ($routes) {
-        $routes->fallbacks(DashedRoute::class);
-    });
-});
-*/
