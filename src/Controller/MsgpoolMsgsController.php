@@ -71,7 +71,7 @@ class MsgpoolMsgsController extends AppController
         }
 
         $this->set(compact('msgpoolMsgs'));
-        $this->render('index');
+     //   $this->render('index');
 
 
     }
