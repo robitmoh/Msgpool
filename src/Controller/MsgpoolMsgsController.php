@@ -21,60 +21,57 @@ class MsgpoolMsgsController extends AppController
     public function index()
     {
         $this->paginate = [
-            'contain' => ['Users', 'Owners', 'Entities']
+            'contain' => ['Users', 'Owners', 'Entities'],
         ];
         $msgpoolMsgs = $this->paginate($this->MsgpoolMsgs);
 
         $this->set(compact('msgpoolMsgs'));
     }
 
+    /**
+     * subscribedMsgs method
+     *
+     * @return \Cake\Http\Response|void
+     */
+    public function subscribedMsgs()
+    {
+        $this->MsgpoolMsgs->belongsTo('MsgpoolSubscribes', [
+                                                   'foreignKey' => false,
+                                                   'conditions' => [
+                                                                       'MsgpoolMsgs.source = MsgpoolSubscribes.source',
+                                                                       'MsgpoolMsgs.type like MsgpoolSubscribes.type',
+                                                                       'MsgpoolMsgs.sender_point like MsgpoolSubscribes.sender_point',
+                                                                   ],
+                                                               ]);
 
-     public function subscribedMsgs() {
-
-        $this->MsgpoolMsgs->belongsTo('MsgpoolSubscribes', array(
-                                                    'foreignKey' => false,
-                                                    'conditions' => array(
-                                                                        'MsgpoolMsgs.source = MsgpoolSubscribes.source',
-                                                                        'MsgpoolMsgs.type like MsgpoolSubscribes.type',
-                                                                        'MsgpoolMsgs.sender_point like MsgpoolSubscribes.sender_point'
-                                                                    )                                    
-                                                                )
-        );
-        
-        /*$this->paginate = [
-            'contain' => ['Users', 'Owners', 'Entities','MsgpoolSubscribes'],
-             'conditions' => ['MsgpoolSubscribes.user_id'=>7]
-        ];
-        
-
-        $msgpoolMsgs = $this->paginate($this->MsgpoolMsgs);
-        */
-        $msgpoolMsgs=array();
-        $msgpoolMsgsall = $this->MsgpoolMsgs->find('all',[
-                'contain' => ['Users', 'Owners', 'Entities','MsgpoolSubscribes'],
-                'conditions' => ['MsgpoolSubscribes.user_id'=>6]
-         ])->toArray();
+        $msgpoolMsgs = [];
+        $msgpoolMsgsall = $this->MsgpoolMsgs->find('all', [
+               'contain' => ['Users', 'Owners', 'Entities', 'MsgpoolSubscribes'],
+               'conditions' => ['MsgpoolSubscribes.user_id' => $this->request->session()->read('Auth.User.id')],
+        ])->toArray();
 
         //debug($msgpoolMsgsall);
         foreach ($msgpoolMsgsall as $key => $value) {
-//            debug($value);
-            $level=$this->MsgpoolMsgs->Entities->user_level($value['entity_id'],6);
-            if ($value['msgpool_subscribe']->level=='viewer'){
-                $msgpoolMsgs[$key]=$value;
-                $msgpoolMsgs[$key]['subscriber_id']=$value['msgpool_subscribe']->id;
-                $msgpoolMsgs[$key]['level']=$level;
+            //debug($value);
+            $level = $this->MsgpoolMsgs->Entities->userLevel($value['entity_id'], $this->request->session()->read('Auth.User.id'));
+            //debug($level);
+            if ( in_array($value['msgpool_subscribe']->level, $level)) {
+                $msgpoolMsgs[$key] = $value;
+                $msgpoolMsgs[$key]['subscriber_id'] = $value['msgpool_subscribe']->id;
+                $msgpoolMsgs[$key]['level'] = $level;
             }
-            
 
-            
             # code...
         }
 
         $this->set(compact('msgpoolMsgs'));
-     //   $this->render('index');
-
-
+        if ($this->request->is('ajax')) {
+            # code...
+            $this->viewBuilder()->layout('ajax');
+            $this->render('subscribed_msgs_sidebar');
+        }
     }
+
     /**
      * View method
      *
@@ -85,7 +82,7 @@ class MsgpoolMsgsController extends AppController
     public function view($id = null)
     {
         $msgpoolMsg = $this->MsgpoolMsgs->get($id, [
-            'contain' => ['Users', 'Owners', 'Entities']
+            'contain' => ['Users', 'Owners', 'Entities'],
         ]);
 
         $this->set('msgpoolMsg', $msgpoolMsg);
@@ -124,7 +121,7 @@ class MsgpoolMsgsController extends AppController
     public function edit($id = null)
     {
         $msgpoolMsg = $this->MsgpoolMsgs->get($id, [
-            'contain' => []
+            'contain' => [],
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $msgpoolMsg = $this->MsgpoolMsgs->patchEntity($msgpoolMsg, $this->request->getData());

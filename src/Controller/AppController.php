@@ -7,9 +7,13 @@ use App\Controller\AppController as BaseController;
 class AppController extends BaseController
 {
     public $levels = ['creator' => 'Létrehoztam', 'worker' => 'Dolgozom', 'viewer' => 'Figyelem', 'owner' => 'Tulajdonos'];
-    public $sources = ['ticket' => 'ticket'];
-    public $sender_points = ['change_ticket_queue' => 'Queue változás', 'change_ticket_state' => 'Ticket állapot változás', 'change_ticket_provlocation' => 'Szolgáltatási hely változás'];
-    public $types = ['create' => 'Létrehozás', 'mod' => 'Változás', 'close' => 'Lezárás'];
+    public $sources = ['%' => 'Mind', 'ticket' => 'ticket'];
+    public $sender_points = ['%' => 'Mind', 'change_ticket_queue' => 'Queue változás', 'change_ticket_state' => 'Ticket állapot változás', 'change_ticket_provlocation' => 'Szolgáltatási hely változás'];
+    public $types = ['%' => 'Mind', 'create' => 'Létrehozás', 'mod' => 'Változás', 'close' => 'Lezárás'];
+
+    /**
+     * Before render
+     */
     public function beforeRender($event)
     {
                 $levels = $this->levels;

@@ -136,8 +136,13 @@ class MsgpoolMsgsTable extends Table
         $get_target_user=[6]; //$user_id
 
         foreach ($get_target_user as $key => $value) {
-            
-
+           /* a type értéke ??
+            közvetlen megadással vagy 
+            linkelve az esemény típusokhoz?
+            vagy nem is kell sender point megadja?
+            a ticket state változás lehet nyitás és lezárás is
+            több case a kiemelt állapotopkra pl nyitás zárás a többi mod?
+            */
             $msg= $this->newEntity([
                 'date'=>Time::now(),
                 'sender_point'=>$msg_header['sender_point'],

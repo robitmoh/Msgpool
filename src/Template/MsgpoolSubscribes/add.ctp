@@ -20,12 +20,11 @@
         <legend><?= __('Add Msgpool Subscribe') ?></legend>
         <?php
             echo $this->Form->control('user_id', ['options' => $users, 'empty' => true]);
-            echo $this->Form->control('date');
-            echo $this->Form->control('sender_point');
-            echo $this->Form->control('source');
-            echo $this->Form->control('type');
-            echo $this->Form->control('level');
-            echo $this->Form->control('grouping');
+            echo $this->Form->control('sender_point',  ['options' => $sender_points, 'empty' => true]);
+            echo $this->Form->control('source',  ['options' => $sources, 'empty' => true]);
+            echo $this->Form->control('type',  ['options' => $types, 'empty' => true]);
+            echo $this->Form->control('level',  ['options' => $levels, 'empty' => true]);
+            echo $this->Form->control('grouping',  ['options' => ['TID','TID hour'], 'empty' => true]);
             echo $this->Form->control('msgpool_action_id', ['options' => $msgpoolActions, 'empty' => true]);
         ?>
     </fieldset>

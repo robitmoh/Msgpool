@@ -80,6 +80,7 @@ class MsgpoolSubscribesController extends AppController
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $msgpoolSubscribe = $this->MsgpoolSubscribes->patchEntity($msgpoolSubscribe, $this->request->getData());
+
             if ($this->MsgpoolSubscribes->save($msgpoolSubscribe)) {
                 $this->Flash->success(__('The msgpool subscribe has been saved.'));
 
